@@ -1,4 +1,3 @@
-
 #  -*- coding: utf-8 -*-
 # !/usr/local/bin/python
 
@@ -32,7 +31,7 @@ def get_host_isp_information():
     -----------
     None (stdout)
     """
-    public_ip_request = 'https://api.ipify.org?format=json'
+    public_ip_request = 'https://api6.ipify.org?format=json'
     response = requests.get(public_ip_request)
     ip_addr = json.loads(response.text)
     cymru_request = 'whois -h whois.cymru.com " -v {}"'.format(ip_addr['ip'])
@@ -83,7 +82,15 @@ def request_for_oca():
     print('> IP address of the allocated OCAs')
     for oca in oca_list:
             fqdn = oca['url'].split('/')[2]
-            print(socket.gethostbyname(fqdn))
+            ip=socket.gethostbyname(fqdn)
+            print(fqdn)
+            cymru_request = 'whois -h whois.cymru.com " -v {}"'.format(ip)
+            # Run command to extract TOKEN from FAST response
+            host_isp_information = subprocess.check_output(
+                cymru_request,
+                shell=True
+            )
+            print(host_isp_information.decode("utf-8"))
 
 
 def main():
